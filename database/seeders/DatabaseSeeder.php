@@ -17,20 +17,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            CategorySeeder::class,
-        ]);
+
         // User::truncate();
-        Expense::truncate();
+        // Expense::truncate();
         // Category::truncate();
         // ExpenseParticipant::truncate();
         // Payment::truncate();
 
 
-        User::factory(10)->create();
-        Expense::factory(10)->create();
+        // User::factory(10)->create();
+        // Expense::factory(3)->create();
         // Category::factory(5)->create();
         // ExpenseParticipant::factory(5)->create();
         // Payment::factory(5)->create();
+
+        $this->call([
+            UserSeeder::class,
+            CategorySeeder::class,
+            ExpenseSeeder::class,
+            ExpenseParticipantSeeder::class,
+        ]);
     }
 }

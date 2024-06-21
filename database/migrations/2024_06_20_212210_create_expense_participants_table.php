@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('expense_participants', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->unsignedBigInteger('expense_id');
+            $table->unsignedBigInteger('user_id');
+            $table->decimal('amount_to_refund', 10, 2);
+            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamp('created_at')->useCurrent();
+
+            $table->foreign('expense_id')->references('id')->on('expenses')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

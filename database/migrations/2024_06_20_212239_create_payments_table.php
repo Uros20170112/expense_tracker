@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,7 +12,16 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('payer_id');
+            $table->unsignedBigInteger('payee_id');
+            $table->unsignedBigInteger('expense_id');
+            $table->decimal('amount', 10, 2);
+            $table->date('payment_date');
             $table->timestamps();
+
+            $table->foreign('payer_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('payee_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('expense_id')->references('id')->on('expenses')->onDelete('cascade');
         });
     }
 
