@@ -44,4 +44,30 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function expenseParticipants()
+    {
+        return $this->hasMany(ExpenseParticipant::class);
+    }
+
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class, 'PaidBy');
+    }
+
+    /**
+     * Get the payments made by the user.
+     */
+    public function paymentsMade()
+    {
+        return $this->hasMany(Payment::class, 'payer_id');
+    }
+
+    /**
+     * Get the payments received by the user.
+     */
+    public function paymentsReceived()
+    {
+        return $this->hasMany(Payment::class, 'payee_id');
+    }
 }
