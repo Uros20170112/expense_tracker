@@ -17,13 +17,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::truncate();
-        Expense::truncate();
-        ExpenseParticipant::truncate();
-        Payment::truncate();
+        // Expense::truncate();
+        // ExpenseParticipant::truncate();
+        // Payment::truncate();
 
         User::factory(5)->create();
-        Expense::factory(5)->create();
-        ExpenseParticipant::factory(5)->create();
-        Payment::factory(5)->create();
+        // Expense::factory(5)->create();
+        // ExpenseParticipant::factory(5)->create();
+        // Payment::factory(5)->create();
     }
 }
