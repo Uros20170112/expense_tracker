@@ -98,4 +98,42 @@ class ExpenseController extends Controller
 
         return response()->json('Expense is deleted');
     }
+
+    public function exportToCSV()
+    {
+        $fileName = 'expenses.csv';
+        $expenses = Expense::all();
+
+        $headers = [
+            "Content-Type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $columns = ['ID', 'Description', 'Amount', 'Paid By', 'Category ID', 'Paid On', 'Created At', 'Updated At'];
+
+        $callback = function() use($expenses, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($expenses as $expense) {
+                $row['ID']  = $expense->id;
+                $row['Description']    = $expense->description;
+                $row['Amount']    = $expense->amount;
+                $row['Paid By']  = $expense->paid_by;
+                $row['Category ID']  = $expense->category_id;
+                $row['Paid On']  = $expense->paid_on;
+                $row['Created At']  = $expense->created_at;
+                $row['Updated At']  = $expense->updated_at;
+
+                fputcsv($file, array($row['ID'], $row['Description'], $row['Amount'], $row['Paid By'], $row['Category ID'], $row['Paid On'], $row['Created At'], $row['Updated At']));
+            }
+
+            fclose($file);
+        };
+
+        return Response::stream($callback, 200, $headers);
+    }
 }
