@@ -17,20 +17,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
-        // User::truncate();
-        // Expense::truncate();
-        // Category::truncate();
-        // ExpenseParticipant::truncate();
-        // Payment::truncate();
-
-
-        // User::factory(10)->create();
-        // Expense::factory(3)->create();
-        // Category::factory(5)->create();
-        // ExpenseParticipant::factory(5)->create();
-        // Payment::factory(5)->create();
-
         $this->call([
             UserSeeder::class,
             CategorySeeder::class,
