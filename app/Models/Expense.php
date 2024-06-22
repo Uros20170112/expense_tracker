@@ -19,7 +19,7 @@ class Expense extends Model
     /**
      * Get the user who paid for the expense.
      */
-    public function paidByUser()
+    public function user()
     {
         return $this->belongsTo(User::class, 'paid_by');
     }
@@ -30,5 +30,12 @@ class Expense extends Model
     public function participants()
     {
         return $this->hasMany(ExpenseParticipant::class);
+    }
+    /**
+     * Get the category for the expense.
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
     }
 }
