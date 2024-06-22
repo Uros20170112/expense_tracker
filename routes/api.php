@@ -42,6 +42,9 @@ Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [APIController::class, 'login']);
 Route::post('/logout', [APIController::class, 'logout']);
 
+Route::get('/users/export/csv', [UserController::class, 'exportToCSV']);
+Route::get('/expenses/export/csv', [ExpenseController::class, 'exportToCSV']);
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/profile', function (Request $request) {
         return auth()->user();

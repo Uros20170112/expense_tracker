@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -147,5 +148,40 @@ class UserController extends Controller
         $user->delete();
 
         return response()->json('User is deleted');
+    }
+
+    public function exportToCSV()
+    {
+        $fileName = 'users.csv';
+        $users = User::all();
+
+        $headers = [
+            "Content-Type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $columns = ['ID', 'Name', 'Email', 'Created At', 'Updated At'];
+
+        $callback = function() use($users, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($users as $user) {
+                $row['ID']  = $user->id;
+                $row['Name']    = $user->name;
+                $row['Email']    = $user->email;
+                $row['Created At']  = $user->created_at;
+                $row['Updated At']  = $user->updated_at;
+
+                fputcsv($file, array($row['ID'], $row['Name'], $row['Email'], $row['Created At'], $row['Updated At']));
+            }
+
+            fclose($file);
+        };
+
+        return Response::stream($callback, 200, $headers);
     }
 }
