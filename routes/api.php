@@ -40,6 +40,7 @@ Route::get('/payments/{id}', [PaymentController::class, 'show']);
 
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [APIController::class, 'login']);
+Route::post('/logout', [APIController::class, 'logout']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/profile', function (Request $request) {
