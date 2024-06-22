@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Authorization;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -31,26 +32,38 @@ class APIController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
-            'data' => $user,
+            'user' => $user,
             'access_token' => $token,
             'token_type' => 'Bearer'
         ]);
+
     }
 
     public function login(Request $request)
     {
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+        // Validacija zahteva
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $user = User::where('email', $request['email'])->firstOrFail();
+        // Pokušaj prijave korisnika
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json(['message' => 'Invalid login credentials'], 401);
+        }
 
+        // Generisanje tokena za korisnika
+        $user = Auth::user();
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'message' => $user->name . ' logged in',
             'access_token' => $token,
-            'token_type' => 'Bearer'
+            'token_type' => 'Bearer',
         ]);
     }
 

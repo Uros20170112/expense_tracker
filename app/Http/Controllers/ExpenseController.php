@@ -37,7 +37,7 @@ class ExpenseController extends Controller
             'amount' => 'required|numeric',
             'paid_by' => 'required|exists:users,id',
             'category_id' => 'required|exists:categories,id',
-            'paid_on' => 'required|date',
+            'paid_on' => 'date',
         ]);
 
         if ($validator->fails()) {
@@ -77,7 +77,7 @@ class ExpenseController extends Controller
             'amount' => 'sometimes|required|numeric',
             'paid_by' => 'sometimes|required|exists:users,id',
             'category_id' => 'sometimes|required|exists:categories,id',
-            'paid_on' => 'sometimes|required|date',
+            'paid_on' => 'sometimes|date',
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
@@ -96,6 +96,6 @@ class ExpenseController extends Controller
     {
         $expense->delete();
 
-        return response()->json(null, 204);
+        return response()->json('Expense is deleted');
     }
 }

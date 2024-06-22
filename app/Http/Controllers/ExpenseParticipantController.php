@@ -96,6 +96,6 @@ class ExpenseParticipantController extends Controller
         // Brisanje učesnika troška
         $expenseParticipant->delete();
 
-        return response()->json(null, 204);
+        return response()->json('Expense participant is deleted');
     }
 }

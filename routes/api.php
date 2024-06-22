@@ -38,7 +38,7 @@ Route::get('/expensesParticipants/{id}', [ExpenseParticipantController::class, '
 Route::get('/payments', [PaymentController::class, 'index']);
 Route::get('/payments/{id}', [PaymentController::class, 'show']);
 
-Route::post('/register', [APIController::class, 'register']);
+Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [APIController::class, 'login']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {

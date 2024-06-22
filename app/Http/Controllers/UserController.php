@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Auth;
 
 class UserController extends Controller
 {
@@ -19,6 +20,46 @@ class UserController extends Controller
         $users = User::all();
         return UserResource::collection($users);
     }
+
+    public function register(Request $request)
+    {
+        // Validacija zahteva
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        // Kreiranje novog korisnika
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        return new UserResource($user);
+    }
+
+    // public function login(Request $request)
+    // {
+    //     if (!Auth::attempt($request->only('email', 'password'))) {
+    //         return response()->json(['message' => 'Unauthorized'], 401);
+    //     }
+
+    //     $user = User::where('email', $request['email'])->firstOrFail();
+
+    //     $token = $user->createToken('auth_token')->plainTextToken;
+
+    //     return response()->json([
+    //         'message' => $user->name . ' logged in',
+    //         'access_token' => $token,
+    //         'token_type' => 'Bearer'
+    //     ]);
+    // }
 
     /**
      * Show the form for creating a new resource.
@@ -105,6 +146,6 @@ class UserController extends Controller
         // Brisanje korisnika
         $user->delete();
 
-        return response()->json(null, 204);
+        return response()->json('User is deleted');
     }
 }

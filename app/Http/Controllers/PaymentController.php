@@ -100,6 +100,6 @@ class PaymentController extends Controller
         // Brisanje uplate
         $payment->delete();
 
-        return response()->json(null, 204);
+        return response()->json('Payment is deleted');
     }
 }

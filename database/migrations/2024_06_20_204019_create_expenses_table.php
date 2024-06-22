@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->decimal('amount', 10, 2);
             $table->unsignedBigInteger('paid_by');
             $table->unsignedBigInteger('category_id');
-            $table->date('paid_on');
+            $table->date('paid_on')->nullable()->default(DB::raw('CURRENT_DATE'));;
             $table->timestamps();
 
             $table->foreign('paid_by')->references('id')->on('users')->onDelete('cascade');
