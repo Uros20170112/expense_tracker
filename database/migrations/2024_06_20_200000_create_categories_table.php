@@ -4,16 +4,16 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('payments', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->decimal('amount', 10, 2);
-            $table->date('payment_date');
+            $table->enum('name', ['loan', 'health & fitness', 'cars & transportation', 'groceries', 'going out', 'shopping & services', 'vacation & travel', 'leisure & lifestyle activities', 'uncategorized']);
             $table->timestamps();
         });
     }
@@ -23,6 +23,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('payments');
+        Schema::dropIfExists('categories');
     }
 };

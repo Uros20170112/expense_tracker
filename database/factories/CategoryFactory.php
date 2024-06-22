@@ -19,9 +19,8 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
-        // $categories = ['loan', 'health & fitness', 'cars & transportation', 'groceries', 'going out', 'shopping & services', 'vacation & travel', 'leisure & lifestyle activities', 'uncategorized'];
         return [
-            // 'name' => $this->faker->randomElement($categories),
+            //
         ];
     }
 }
