@@ -1,39 +1,45 @@
 import { useState } from "react";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const [userData, setUserData] = useState({
     name: "",
     email: "",
     password: "",
+    repeatPassword: "",
   });
 
+  let navigate = useNavigate();
+
   function handleInput(e) {
-    console.log(e);
+    // console.log(e);
     let newUserData = userData;
     newUserData[e.target.name] = e.target.value;
     setUserData(newUserData);
-    console.log("Email:", userData.email);
+    // console.log("Email:", userData.email);
     // console.log('Password:', userData.password);
   }
 
-  const handleSubmit = (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
+
+    console.log("Name:", userData.name);
     console.log("Email:", userData.email);
     console.log("Password:", userData.password);
-// PROMENI OVO
-    axios.post("http://127.0.0.1:8000/api/register", userData).then((res) => {
-      console.log(res.data);
-      if(res.data.success === true) {
-        window.sessionStorage.setItem("auth_token", res.data.access_token);
-      }
-    }).catch((e)=>{
-      console.log(e);
-    });
+    if (userData.password === userData.repeatPassword) {
+      axios.post("http://127.0.0.1:8000/api/register", userData).then((res) => {
+        console.log(res.data);
+      });
+    } else {
+      console.log("Passwords do not match");
+    }
+    navigate("/login")
+
   };
   return (
     <section
-      class="vh-100 bg-image"
+      className="vh-100 bg-image"
       style={{
         backgroundImage:
           "url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp')",
@@ -49,14 +55,16 @@ const LoginPage = () => {
                     Create an account
                   </h2>
 
-                  <form>
+                  <form onSubmit={handleRegister}>
                     <div data-mdb-input-init className="form-outline mb-4">
                       <input
                         type="text"
                         id="form3Example1cg"
                         className="form-control form-control-lg"
+                        name="name"
+                        onChange={handleInput}
                       />
-                      <label className="form-label" for="form3Example1cg">
+                      <label className="form-label" htmlFor="form3Example1cg">
                         Your Name
                       </label>
                     </div>
@@ -69,7 +77,7 @@ const LoginPage = () => {
                         name="email"
                         onChange={handleInput}
                       />
-                      <label className="form-label" for="form3Example3cg">
+                      <label className="form-label" htmlFor="form3Example3cg">
                         Your Email
                       </label>
                     </div>
@@ -82,7 +90,7 @@ const LoginPage = () => {
                         name="password"
                         onChange={handleInput}
                       />
-                      <label className="form-label" for="form3Example4cg">
+                      <label className="form-label" htmlFor="form3Example4cg">
                         Password
                       </label>
                     </div>
@@ -92,8 +100,10 @@ const LoginPage = () => {
                         type="password"
                         id="form3Example4cdg"
                         className="form-control form-control-lg"
+                        name="repeatPassword"
+                        onChange={handleInput}
                       />
-                      <label className="form-label" for="form3Example4cdg">
+                      <label className="form-label" htmlFor="form3Example4cdg">
                         Repeat your password
                       </label>
                     </div>
@@ -105,7 +115,10 @@ const LoginPage = () => {
                         value=""
                         id="form2Example3cg"
                       />
-                      <label className="form-check-label" for="form2Example3g">
+                      <label
+                        className="form-check-label"
+                        htmlFor="form2Example3cg"
+                      >
                         I agree all statements in{" "}
                         <a href="#!" className="text-body">
                           <u>Terms of service</u>
@@ -113,22 +126,23 @@ const LoginPage = () => {
                       </label>
                     </div>
 
-                    <div class="d-flex justify-content-center">
+                    <div className="d-flex justify-content-center">
                       <button
-                        type="button"
+                        type="submit"
                         data-mdb-button-init
                         data-mdb-ripple-init
-                        class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
+                        className="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
                       >
                         Register
                       </button>
                     </div>
 
-                    <p class="text-center text-muted mt-5 mb-0">
+                    <p className="text-center text-muted mt-5 mb-0">
                       Have already an account?{" "}
-                      <a href="#!" class="fw-bold text-body">
+                      <Link to="/login" className="fw-bold text-body">
                         <u>Login here</u>
-                      </a>
+                      </Link>
+
                     </p>
                   </form>
                 </div>
@@ -141,4 +155,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

@@ -1,11 +1,14 @@
 import { useState } from "react";
-import axios from "axios"
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [userData, setUserData] = useState({
     email: "",
     password: "",
   });
+
+  let navigate = useNavigate();
 
   function handleInput(e) {
     // console.log(e);
@@ -20,44 +23,48 @@ const LoginPage = () => {
     e.preventDefault();
     // console.log("Email:", userData.email);
     // console.log("Password:", userData.password);
-    axios.post("http://127.0.0.1:8000/api/login", userData).then((res) => {
-      console.log(res.data);
-      if(res.data.success === true) {
-        window.sessionStorage.setItem("auth_token", res.data.access_token);
-      }
-    }).catch((e)=>{
-      console.log(e);
-    });
+    axios
+      .post("http://127.0.0.1:8000/api/login", userData)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.success === true) {
+          window.sessionStorage.setItem("auth_token", res.data.access_token);
+          navigate("/");
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
   return (
-    <section className="vh-100" style={{backgroundcolor: "#9A616D"}}>
+    <section className="vh-100" style={{ backgroundcolor: "#9A616D" }}>
       <div className="container py-5 h-100">
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col col-xl-10">
-            <div className="card" style={{borderradius: "1rem"}}>
+            <div className="card" style={{ borderradius: "1rem" }}>
               <div className="row g-0">
                 <div className="col-md-6 col-lg-5 d-none d-md-block">
                   <img
                     src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/img1.webp"
                     alt="login form"
                     className="img-fluid"
-                    style={{borderradius: "1rem 0 0 1rem"}}
+                    style={{ borderradius: "1rem 0 0 1rem" }}
                   />
                 </div>
                 <div className="col-md-6 col-lg-7 d-flex align-items-center">
                   <div className="card-body p-4 p-lg-5 text-black">
-                  <form onSubmit={handleLogin}>
+                    <form onSubmit={handleLogin}>
                       <div className="d-flex align-items-center mb-3 pb-1">
                         <i
                           className="fas fa-cubes fa-2x me-3"
-                          style={{color: "#ff6219"}}
+                          style={{ color: "#ff6219" }}
                         ></i>
                         <span className="h1 fw-bold mb-0">Expense Tracker</span>
                       </div>
 
                       <h5
                         className="fw-normal mb-3 pb-3"
-                        style={{letterspacing: "1px"}}
+                        style={{ letterspacing: "1px" }}
                       >
                         Sign into your account
                       </h5>
@@ -99,14 +106,18 @@ const LoginPage = () => {
                         </button>
                       </div>
 
-                      <a className="small text-muted" href="#!">
-                        Forgot password?
-                      </a>
-                      <p className="mb-5 pb-lg-2" style={{color: "#393f81"}}>
+                      <Link
+                        to={"/forgotPassword"}
+                        className="small text-muted"
+                        href="#!"
+                      >
+                        <u>Forgot password?</u>
+                      </Link>
+                      <p className="mb-5 pb-lg-2" style={{ color: "#393f81" }}>
                         Don't have an account?{" "}
-                        <a href="#!"  style={{color: "#393f81"}}>
-                          Register here
-                        </a>
+                        <Link to="/register" className="fw-bold text-body">
+                          <u>Register here</u>
+                        </Link>
                       </p>
                       <a href="#!" className="small text-muted">
                         Terms of use.
