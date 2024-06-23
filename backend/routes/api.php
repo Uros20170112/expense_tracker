@@ -40,7 +40,6 @@ Route::get('/payments/{id}', [PaymentController::class, 'show']);
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::get('/users/export/csv', [UserController::class, 'exportToCSV']);
 Route::get('/expenses/export/csv', [ExpenseController::class, 'exportToCSV']);

@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
+const LoginPage = ({ addToken }) => {
   const [userData, setUserData] = useState({
     email: "",
     password: "",
@@ -24,11 +24,13 @@ const LoginPage = () => {
     // console.log("Email:", userData.email);
     // console.log("Password:", userData.password);
     axios
-      .post("http://127.0.0.1:8000/api/login", userData)
+      .post("api/login", userData)
       .then((res) => {
         console.log(res.data);
         if (res.data.success === true) {
           window.sessionStorage.setItem("auth_token", res.data.access_token);
+          window.sessionStorage.setItem("user_role", res.data.user_role);
+          addToken(res.data.auth_token);
           navigate("/");
         }
       })
