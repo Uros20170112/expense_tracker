@@ -24,7 +24,6 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
-        // Validacija zahteva
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -35,7 +34,6 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Kreiranje novog korisnika
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -67,7 +65,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        // Nije potrebno za API kontroler
+        //
     }
 
     /**
@@ -75,7 +73,6 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // Validacija zahteva
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -86,7 +83,6 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Kreiranje novog korisnika
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -101,7 +97,6 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        // Prikazivanje određenog korisnika
         return new UserResource($user);
     }
 
@@ -110,7 +105,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        // Nije potrebno za API kontroler
+        //
     }
 
     /**
@@ -118,7 +113,6 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // Validacija zahteva
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id,
@@ -129,7 +123,6 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Ažuriranje korisnika
         $user->update([
             'name' => $request->name ?? $user->name,
             'email' => $request->email ?? $user->email,
@@ -144,7 +137,6 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        // Brisanje korisnika
         $user->delete();
 
         return response()->json('User is deleted');

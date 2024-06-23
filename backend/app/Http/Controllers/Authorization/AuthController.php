@@ -20,50 +20,78 @@ class AuthController extends Controller
             'password' => 'required|string|min:8',
         ]);
 
-        if ($validator->fails()) {
+        // if ($validator->fails()) {
+        //     return response()->json($validator->errors());
+        // }
+
+        // $user = User::create([
+        //     'name' => $request->name,
+        //     'email' => $request->email,
+        //     'password' => Hash::make($request->password)
+        // ]);
+
+        // $token = $user->createToken('auth_token')->plainTextToken;
+        // return response()->json([
+        //     'user' => $user,
+        //     'access_token' => $token,
+        //     'token_type' => 'Bearer'
+        // ]);
+        if ($validator->fails())
             return response()->json($validator->errors());
-        }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'role' => 'User',
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json([
-            'user' => $user,
-            'access_token' => $token,
-            'token_type' => 'Bearer'
-        ]);
+
+        return response()->json(['user' => $user, 'access_token' => $token, 'token_type' => 'Bearer']);
 
     }
 
+    // public function login(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'email' => 'required|string|email',
+    //         'password' => 'required|string',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json(['errors' => $validator->errors()], 422);
+    //     }
+
+    //     if (!Auth::attempt($request->only('email', 'password'))) {
+    //         return response()->json(['message' => 'Invalid login credentials'], 401);
+    //     }
+
+    //     $user = Auth::user();
+    //     $token = $user->createToken('auth_token')->plainTextToken;
+
+    //     return response()->json([
+    //         'message' => $user->name . ' logged in',
+    //         'access_token' => $token,
+    //         'token_type' => 'Bearer',
+    //     ]);
+    // }
+
     public function login(Request $request)
     {
-        // Validacija zahteva
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        // Pokušaj prijave korisnika
         if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Invalid login credentials'], 401);
+            return response()->json(['success' => false]);
         }
 
-        // Generisanje tokena za korisnika
-        $user = Auth::user();
+        $user = User::where('email', $request['email'])->firstOrFail();
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'success' => true,
             'message' => $user->name . ' logged in',
             'access_token' => $token,
-            'token_type' => 'Bearer',
+            'token_type' => 'Bearer'
         ]);
     }
 

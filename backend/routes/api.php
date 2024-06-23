@@ -38,7 +38,7 @@ Route::get('/expensesParticipants/{id}', [ExpenseParticipantController::class, '
 Route::get('/payments', [PaymentController::class, 'index']);
 Route::get('/payments/{id}', [PaymentController::class, 'show']);
 
-Route::post('/register', [UserController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
