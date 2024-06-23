@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Authorization\APIController;
+use App\Http\Controllers\Authorization\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ExpenseParticipantController;
@@ -39,8 +39,8 @@ Route::get('/payments', [PaymentController::class, 'index']);
 Route::get('/payments/{id}', [PaymentController::class, 'show']);
 
 Route::post('/register', [UserController::class, 'register']);
-Route::post('/login', [APIController::class, 'login']);
-Route::post('/logout', [APIController::class, 'logout']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::get('/users/export/csv', [UserController::class, 'exportToCSV']);
 Route::get('/expenses/export/csv', [ExpenseController::class, 'exportToCSV']);
@@ -59,5 +59,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('/payments', PaymentController::class)
         ->only(['store', 'update', 'destroy']);
 
-    Route::post('/logout', [APIController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
