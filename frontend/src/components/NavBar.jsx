@@ -76,7 +76,7 @@ const NavBar = ({ token }) => {
               )}
               {userRole === "Administrator" ? (
                 <li className="nav-item">
-                  <a className="nav-link" href="/users">
+                  <a className="nav-link" href="/allUsers">
                     All users
                   </a>
                 </li>
