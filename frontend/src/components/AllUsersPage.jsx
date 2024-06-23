@@ -1,58 +1,43 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const AllUsers = () => {
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    // API poziv za preuzimanje podataka o trenutno ulogovanom korisniku
-    const token = window.sessionStorage.getItem("auth_token");
-
-    if (token) {
-      axios.get("/api/user", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json"
-        }
-      })
-      .then((response) => {
-        setUser(response.data);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the user data!", error);
-        setError("There was an error fetching the user data");
-      });
-    }
+    axios.get("/api/users").then((response) => {
+      console.log("API response:", response.data);
+      const data = response.data.data;
+      if (Array.isArray(data)) {
+        setUsers(data);
+      }
+    });
   }, []);
 
-  if (error) {
-    return <div className="container mt-5"><h2 className="mb-4">Error: {error}</h2></div>;
-  }
-
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4">All Users</h2>
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-          </tr>
-        </thead>
-        <tbody>
-          {user && (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.role}</td>
+    <div className="container">
+      {
+        <table className="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>{user.role}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      }
     </div>
   );
 };
