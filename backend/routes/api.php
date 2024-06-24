@@ -55,7 +55,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('/users', UserController::class)
         ->only(['store', 'update', 'destroy']);
 
-    Route::delete('/users/multiple', [UserController::class, 'destroyMultiple']);
+    Route::delete('/usersdestroymultiple', [UserController::class, 'destroyMultiple']);
 
     Route::resource('/expenses', ExpenseController::class)
         ->only(['store', 'update', 'destroy']);

@@ -1,6 +1,7 @@
 // AllUsersPage.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -42,16 +43,17 @@ const AllUsers = () => {
 
   const handleDeleteSelected = () => {
     const authToken = window.sessionStorage.getItem("auth_token");
+    // const axios = require('axios');
     const data = { ids: selectedUsers };
 
     let config = {
       method: 'delete',
       maxBodyLength: Infinity,
-      url: 'http://127.0.0.1:8000/api/users/multiple',
+      url: 'http://127.0.0.1:8000/api/usersdestroymultiple',
       headers: { 
         'Accept': 'application/json', 
-        'Authorization': `Bearer ${authToken}`, 
-      'Content-Type': 'application/json'
+        'Content-Type': 'application/json', 
+        'Authorization': `Bearer ${authToken}`,
       },
       data : data
     };

@@ -152,6 +152,7 @@ class UserController extends Controller
     {
         try {
             $ids = $request->input('ids');
+            
             User::whereIn('id', $ids)->delete();
 
             return response()->json(['message' => 'Users deleted successfully.'], 200);
