@@ -136,20 +136,28 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $id)
+    public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
 
-        return response()->json('User is deleted');
+            return response()->json(['message' => 'User deleted successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
     }
 
     public function destroyMultiple(Request $request)
     {
-        $ids = $request->input('ids');
-        User::whereIn('id', $ids)->delete();
+        try {
+            $ids = $request->input('ids');
+            User::whereIn('id', $ids)->delete();
 
-        return response()->json('Users deleted successfully');
+            return response()->json(['message' => 'Users deleted successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred.'], 500);
+        }
     }
 
     public function indexPaginate()

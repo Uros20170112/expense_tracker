@@ -7,6 +7,7 @@ import NavBar from "./components/NavBar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import AllUsersPage from "./components/AllUsersPage";
+import HomePage from "./components/HomePage";
 
 function App() {
   const [token, setToken] = useState();
@@ -20,7 +21,8 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
         <Route path="/" element={<NavBar token={token} />}>
-          <Route path="allUsers" element={<AllUsersPage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/allUsers" element={<AllUsersPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

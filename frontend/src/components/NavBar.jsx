@@ -34,6 +34,11 @@ const NavBar = ({ token }) => {
   return (
     <div>
       <nav className="navbar navbar-expand-xl navbar-light bg-light">
+      {/* style={{
+        backgroundImage: "url('')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }} */}
         <div className="container-fluid">
           <a className="navbar-brand" href="#">
             Expense Tracker
@@ -52,9 +57,9 @@ const NavBar = ({ token }) => {
           <div className="collapse navbar-collapse" id="navbarBasic">
             <ul className="navbar-nav me-auto mb-2 mb-xl-0">
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#">
-                  Home
-                </a>
+              <Link to="/" className="nav-link">
+                    <u>Home</u>
+                  </Link>
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="#">

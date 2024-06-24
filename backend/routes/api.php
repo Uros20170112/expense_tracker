@@ -28,6 +28,10 @@ Route::get('/users', [UserController::class, 'index']);
 Route::get('/users/p', [UserController::class, 'indexPaginate']);
 Route::get('/users/{id}', [UserController::class, 'show']);
 
+// Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
+
+// });
+
 Route::get('/expenses', [ExpenseController::class, 'index']);
 Route::get('/expenses/p', [ExpenseController::class, 'indexPaginate']);
 Route::get('/expenses/{id}', [ExpenseController::class, 'show']);
@@ -48,11 +52,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/profile', function (Request $request) {
         return auth()->user();
     });
+    Route::resource('/users', UserController::class)
+        ->only(['store', 'update', 'destroy']);
 
-    // Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
-    //     Route::delete('/users/{id}', [UserController::class, 'destroy']);
-    //     Route::delete('/users', [UserController::class, 'destroyMultiple']);
-    // });
+    Route::delete('/users/multiple', [UserController::class, 'destroyMultiple']);
 
     Route::resource('/expenses', ExpenseController::class)
         ->only(['store', 'update', 'destroy']);
