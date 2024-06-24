@@ -34,7 +34,7 @@ const NavBar = ({ token }) => {
   return (
     <div>
       <nav className="navbar navbar-expand-xl navbar-light bg-light">
-      {/* style={{
+        {/* style={{
         backgroundImage: "url('')",
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -57,9 +57,14 @@ const NavBar = ({ token }) => {
           <div className="collapse navbar-collapse" id="navbarBasic">
             <ul className="navbar-nav me-auto mb-2 mb-xl-0">
               <li className="nav-item">
-              <Link to="/" className="nav-link">
-                    <u>Home</u>
-                  </Link>
+                <Link to="/" className="nav-link">
+                  <u>Home</u>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/expenses" className="nav-link">
+                  <u>Expenses</u>
+                </Link>
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="#">

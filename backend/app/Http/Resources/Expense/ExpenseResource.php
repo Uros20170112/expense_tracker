@@ -18,7 +18,7 @@ class ExpenseResource extends JsonResource
             'description' =>$this->resource->description,
             'amount'=>$this->resource->amount,
             'paid_by'=>$this->resource->user->id,
-            'category_id'=>$this->resource->category->category_id,
+            'category_id'=>$this->resource->category_id,
             'paid_on'=>$this->resource->paid_on
         ];
     }
