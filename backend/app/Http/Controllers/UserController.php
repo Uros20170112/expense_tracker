@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\User\UserCollection;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -135,11 +136,30 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $id)
     {
+        $user = User::findOrFail($id);
         $user->delete();
 
         return response()->json('User is deleted');
+    }
+
+    public function destroyMultiple(Request $request)
+    {
+        $ids = $request->input('ids');
+        User::whereIn('id', $ids)->delete();
+
+        return response()->json('Users deleted successfully');
+    }
+
+    public function indexPaginate()
+    {
+        $users = User::all();
+        if (is_null($users)) {
+            return response()->json('No users found', 404);
+        }
+        $users = User::paginate(5);
+        return response()->json(new UserCollection($users));
     }
 
     public function exportToCSV()
@@ -157,16 +177,16 @@ class UserController extends Controller
 
         $columns = ['ID', 'Name', 'Email', 'Created At', 'Updated At'];
 
-        $callback = function() use($users, $columns) {
+        $callback = function () use ($users, $columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
             foreach ($users as $user) {
-                $row['ID']  = $user->id;
-                $row['Name']    = $user->name;
-                $row['Email']    = $user->email;
-                $row['Created At']  = $user->created_at;
-                $row['Updated At']  = $user->updated_at;
+                $row['ID'] = $user->id;
+                $row['Name'] = $user->name;
+                $row['Email'] = $user->email;
+                $row['Created At'] = $user->created_at;
+                $row['Updated At'] = $user->updated_at;
 
                 fputcsv($file, array($row['ID'], $row['Name'], $row['Email'], $row['Created At'], $row['Updated At']));
             }

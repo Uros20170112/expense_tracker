@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Expense\ExpenseCollection;
 use App\Models\Expense;
 use Illuminate\Http\Request;
 use App\Http\Resources\Expense\ExpenseResource;
@@ -31,7 +32,6 @@ class ExpenseController extends Controller
      */
     public function store(Request $request)
     {
-        // Validacija zahteva
         $validator = Validator::make($request->all(), [
             'description' => 'required|string|max:255',
             'amount' => 'required|numeric',
@@ -44,10 +44,18 @@ class ExpenseController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Kreiranje novog troška
         $expense = Expense::create($request->all());
 
         return new ExpenseResource($expense);
+    }
+    public function indexPaginate()
+    {
+        $expenses = Expense::all();
+        if (is_null($expenses)) {
+            return response()->json('No expenses$expenses found', 404);
+        }
+        $expenses = Expense::paginate(5);
+        return response()->json(new ExpenseCollection($expenses));
     }
 
     /**
@@ -55,7 +63,6 @@ class ExpenseController extends Controller
      */
     public function show(Expense $expense)
     {
-        // Prikazivanje određenog troška
         return new ExpenseResource($expense);
     }
 
@@ -83,7 +90,6 @@ class ExpenseController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Ažuriranje troška
         $expense->update($request->all());
 
         return new ExpenseResource($expense);

@@ -49,6 +49,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         return auth()->user();
     });
 
+    // Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
+    //     Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    //     Route::delete('/users', [UserController::class, 'destroyMultiple']);
+    // });
+
     Route::resource('/expenses', ExpenseController::class)
         ->only(['store', 'update', 'destroy']);
 
