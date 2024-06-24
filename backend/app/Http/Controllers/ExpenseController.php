@@ -13,9 +13,15 @@ class ExpenseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $expenses = Expense::all();
+        $paidBy = $request->query('paid_by');
+
+        if ($paidBy) {
+            $expenses = Expense::where('paid_by', $paidBy)->get();
+        } else {
+            $expenses = Expense::all();
+        }
         return ExpenseResource::collection($expenses);
     }
 
@@ -52,7 +58,7 @@ class ExpenseController extends Controller
     {
         $expenses = Expense::all();
         if (is_null($expenses)) {
-            return response()->json('No expenses$expenses found', 404);
+            return response()->json('No expenses found', 404);
         }
         $expenses = Expense::paginate(5);
         return response()->json(new ExpenseCollection($expenses));
@@ -120,19 +126,19 @@ class ExpenseController extends Controller
 
         $columns = ['ID', 'Description', 'Amount', 'Paid By', 'Category ID', 'Paid On', 'Created At', 'Updated At'];
 
-        $callback = function() use($expenses, $columns) {
+        $callback = function () use ($expenses, $columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
             foreach ($expenses as $expense) {
-                $row['ID']  = $expense->id;
-                $row['Description']    = $expense->description;
-                $row['Amount']    = $expense->amount;
-                $row['Paid By']  = $expense->paid_by;
-                $row['Category ID']  = $expense->category_id;
-                $row['Paid On']  = $expense->paid_on;
-                $row['Created At']  = $expense->created_at;
-                $row['Updated At']  = $expense->updated_at;
+                $row['ID'] = $expense->id;
+                $row['Description'] = $expense->description;
+                $row['Amount'] = $expense->amount;
+                $row['Paid By'] = $expense->paid_by;
+                $row['Category ID'] = $expense->category_id;
+                $row['Paid On'] = $expense->paid_on;
+                $row['Created At'] = $expense->created_at;
+                $row['Updated At'] = $expense->updated_at;
 
                 fputcsv($file, array($row['ID'], $row['Description'], $row['Amount'], $row['Paid By'], $row['Category ID'], $row['Paid On'], $row['Created At'], $row['Updated At']));
             }

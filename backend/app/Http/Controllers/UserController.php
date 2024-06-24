@@ -18,7 +18,6 @@ class UserController extends Controller
      */
     public function index()
     {
-        // Prikazivanje svih korisnika
         $users = User::all();
         return UserResource::collection($users);
     }

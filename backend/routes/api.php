@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ExpenseParticipantController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\CategoryController;
 use App\Models\ExpenseParticipant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,9 @@ Route::get('/users', [UserController::class, 'index']);
 Route::get('/users/p', [UserController::class, 'indexPaginate']);
 Route::get('/users/{id}', [UserController::class, 'show']);
 
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/p', [CategoryController::class, 'indexPaginate']);
+Route::get('/categories/{id}', [CategoryController::class, 'show']);
 // Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
 
 // });
