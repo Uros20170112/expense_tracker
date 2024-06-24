@@ -28,8 +28,10 @@ const LoginPage = ({ addToken }) => {
       .then((res) => {
         console.log(res.data);
         if (res.data.success === true) {
+          
           window.sessionStorage.setItem("auth_token", res.data.access_token);
           window.sessionStorage.setItem("user_role", res.data.user_role);
+          window.sessionStorage.setItem("id", res.data.id);
           addToken(res.data.auth_token);
           navigate("/");
         }
