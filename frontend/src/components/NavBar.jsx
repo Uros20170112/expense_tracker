@@ -1,12 +1,14 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Outlet } from "react-router-dom";
 
 const NavBar = ({ token }) => {
   const navigate = useNavigate();
   const userRole = window.sessionStorage.getItem("user_role");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [allUsers, setAllUsers] = useState([]);
+  const [foundUsers, setFoundUsers] = useState([]);
 
   function handleLogout() {
     let config = {
@@ -26,19 +28,48 @@ const NavBar = ({ token }) => {
         window.sessionStorage.removeItem("auth_token");
         window.sessionStorage.removeItem("user_role");
         navigate("/login");
-      })
-      .catch((error) => {
-        console.log(error);
       });
   }
+
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    
+    if (query.length > 0) {
+      if (allUsers.length === 0) {
+        axios
+          .get(`/api/users`)
+          .then((response) => {
+            const users = response.data.data;
+            setAllUsers(users);
+            filterUsers(users, query);
+          });
+      } else {
+        filterUsers(allUsers, query);
+      }
+    } else {
+      setFoundUsers([]);
+    }
+  };
+
+  const filterUsers = (users, query) => {
+    const filteredUsers = users
+      .filter((user) =>
+        user.name.toLowerCase().includes(query.toLowerCase())
+      )
+      .slice(0, 5);
+    setFoundUsers(filteredUsers);
+  };
+
+  const handleUserClick = (userId) => {
+    setSearchQuery("");
+    setFoundUsers([]);
+    navigate(`/profile/${userId}`);
+  };
+
   return (
     <div>
       <nav className="navbar navbar-expand-xl navbar-light bg-light">
-        {/* style={{
-        backgroundImage: "url('')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }} */}
         <div className="container-fluid">
           <a className="navbar-brand" href="#">
             Expense Tracker
@@ -61,16 +92,6 @@ const NavBar = ({ token }) => {
                   <u>Home</u>
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link to="/expenses" className="nav-link">
-                  <u>Expenses</u>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">
-                  Profil
-                </a>
-              </li>
               {window.sessionStorage.getItem("auth_token") == null ? (
                 <li className="nav-item">
                   <Link to="/login" className="nav-link">
@@ -92,13 +113,29 @@ const NavBar = ({ token }) => {
                 </li>
               ) : null}
             </ul>
-            <form className="d-flex">
+            <form className="d-flex position-relative">
               <input
                 className="form-control me-2"
                 type="search"
                 placeholder="Search for users"
                 aria-label="Search"
-              ></input>
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+              {foundUsers.length > 0 && (
+                <ul className="list-group position-absolute" style={{ top: "100%", zIndex: 1000, width: "100%" }}>
+                  {foundUsers.map((user) => (
+                    <li
+                      key={user.id}
+                      className="list-group-item list-group-item-action"
+                      onClick={() => handleUserClick(user.id)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {user.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
               <button className="btn btn-outline-success" type="submit">
                 Search
               </button>

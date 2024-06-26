@@ -21,7 +21,9 @@ const HomePage = () => {
     return axios
       .get("/api/categories", {
         headers: {
-          Authorization: `Bearer ${window.sessionStorage.getItem("auth_token")}`,
+          Authorization: `Bearer ${window.sessionStorage.getItem(
+            "auth_token"
+          )}`,
         },
       })
       .then((response) => {
@@ -34,7 +36,9 @@ const HomePage = () => {
     return axios
       .get("/api/expenses?paid_by=" + window.sessionStorage.getItem("id"), {
         headers: {
-          Authorization: `Bearer ${window.sessionStorage.getItem("auth_token")}`,
+          Authorization: `Bearer ${window.sessionStorage.getItem(
+            "auth_token"
+          )}`,
         },
       })
       .then((response) => {
@@ -77,7 +81,9 @@ const HomePage = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${window.sessionStorage.getItem("auth_token")}`,
+            Authorization: `Bearer ${window.sessionStorage.getItem(
+              "auth_token"
+            )}`,
           },
         }
       )
@@ -108,6 +114,13 @@ const HomePage = () => {
     <div className="container wrapper mt-5 py-4 rounded">
       <div className="container mb-5">
         <div className="row new-expense">
+          <button
+            type="button"
+            className="expense-controls__btn btn btn-block mb-5"
+            disabled={true}
+          >
+            Add Expense
+          </button>
           <div className="col-11 new-expense__controls mt-5 mb-3 px-4 py-4 mx-auto">
             <form onSubmit={handleSubmit}>
               <div className="row">
