@@ -10,6 +10,7 @@ use App\Http\Resources\User\UserResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -18,8 +19,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-        return UserResource::collection($users);
+        $users = DB::table('users')->where('status', 'active')->get();
+        return response()->json($users);
     }
 
     public function register(Request $request)
