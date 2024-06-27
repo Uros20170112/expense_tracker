@@ -70,5 +70,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('/payments', PaymentController::class)
         ->only(['store', 'update', 'destroy']);
 
+    Route::post('/payments/{payment}/pay', [PaymentController::class, 'pay']);
+
     Route::post('/logout', [AuthController::class, 'logout']);
 });

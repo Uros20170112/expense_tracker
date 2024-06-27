@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import AllUsersPage from "./components/AllUsersPage";
 import HomePage from "./components/HomePage";
+import PaymentsPage from "./components/PaymentsPage";
 
 function App() {
   const [token, setToken] = useState();
@@ -22,6 +23,7 @@ function App() {
         <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
         <Route path="/" element={<NavBar token={token} />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/payments" element={<PaymentsPage />} />
           <Route path="/allUsers" element={<AllUsersPage />} />
         </Route>
       </Routes>

@@ -105,6 +105,13 @@ const NavBar = ({ token }) => {
                   </a>
                 </li>
               )}
+              {/* {window.sessionStorage.getItem("auth_token") != null ? (
+                <li className="nav-item">
+                  <Link to="/payments" className="nav-link">
+                    <u>Payments</u>
+                  </Link>
+                </li>
+              ) : null} */}
               {userRole === "Administrator" ? (
                 <li className="nav-item">
                   <a className="nav-link" href="/allUsers">
