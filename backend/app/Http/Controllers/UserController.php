@@ -19,8 +19,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = DB::table('users')->where('status', 'active')->get();
-        return response()->json($users);
+        $users = User::all();
+        return UserResource::collection($users);
     }
 
     public function register(Request $request)

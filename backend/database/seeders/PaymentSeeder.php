@@ -15,11 +15,12 @@ class PaymentSeeder extends Seeder
     public function run()
     {
         DB::statement("
-            INSERT INTO payments (payer_id, payee_id, expense_id, amount, payment_date)
+            INSERT INTO payments (payer_id, payee_id, expense_id, status, amount, payment_date)
             SELECT 
                 ep.user_id AS payer_id,
                 e.paid_by AS payee_id,
                 ep.expense_id,
+                'completed',
                 ep.amount_to_refund AS amount,
                 CURRENT_TIMESTAMP AS payment_date
             FROM 

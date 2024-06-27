@@ -36,6 +36,7 @@ class PaymentController extends Controller
             'payee_id' => 'required|exists:users,id',
             'expense_id' => 'required|exists:expenses,id',
             'amount' => 'required|numeric',
+            'status' => 'required|string',
             'payment_date' => 'required|date',
         ]);
 
