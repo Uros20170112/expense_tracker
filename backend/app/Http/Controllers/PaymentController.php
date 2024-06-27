@@ -35,8 +35,8 @@ class PaymentController extends Controller
             'payer_id' => 'required|exists:users,id',
             'payee_id' => 'required|exists:users,id',
             'expense_id' => 'required|exists:expenses,id',
-            'amount' => 'required|numeric',
             'status' => 'required|string',
+            'amount' => 'required|numeric',
             'payment_date' => 'required|date',
         ]);
 
@@ -67,17 +67,12 @@ class PaymentController extends Controller
 
     public function pay(Request $request, $id)
     {
-        $payment = Payment::find($id);
+        $payment = Payment::findOrFail($id);
+        $payment->amount = 0;
+        $payment->status = 'completed';
+        $payment->save();
 
-        if ($payment->amount == 0) {
-            return response()->json(['message' => 'Payment has already been processed'], 400);
-        }
-
-        $payment->update([
-            'amount' => 0
-        ]);
-
-        return new PaymentResource($payment);
+        return response()->json(new PaymentResource($payment), 200);
     }
 
     /**
@@ -89,6 +84,7 @@ class PaymentController extends Controller
             'payer_id' => 'sometimes|required|exists:users,id',
             'payee_id' => 'sometimes|required|exists:users,id',
             'expense_id' => 'sometimes|required|exists:expenses,id',
+            'status' => 'sometimes|required|string',
             'amount' => 'sometimes|required|numeric',
             'payment_date' => 'sometimes|required|date',
         ]);
@@ -101,7 +97,7 @@ class PaymentController extends Controller
 
         return new PaymentResource($payment);
     }
-    
+
 
     /**
      * Remove the specified resource from storage.

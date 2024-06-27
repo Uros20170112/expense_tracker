@@ -43,9 +43,6 @@ Route::get('/expenses/{id}', [ExpenseController::class, 'show']);
 Route::get('/expenseParticipants', [ExpenseParticipantController::class, 'index']);
 Route::get('/expensesParticipants/{id}', [ExpenseParticipantController::class, 'show']);
 
-Route::get('/payments', [PaymentController::class, 'index']);
-Route::get('/payments/{id}', [PaymentController::class, 'show']);
-
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -70,7 +67,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('/payments', PaymentController::class)
         ->only(['store', 'update', 'destroy']);
 
-    Route::post('/payments/{payment}/pay', [PaymentController::class, 'pay']);
+    Route::get('/payments', [PaymentController::class, 'index']);
+    Route::get('/payments/{id}', [PaymentController::class, 'show']);
+
+    Route::post('/payments/{id}/pay', [PaymentController::class, 'pay']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });

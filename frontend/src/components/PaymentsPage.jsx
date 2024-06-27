@@ -4,8 +4,24 @@ import axios from "axios";
 const PaymentsPage = () => {
   const [awaitingPayments, setAwaitingPayments] = useState([]);
   const [completedPayments, setCompletedPayments] = useState([]);
-  const userId = window.sessionStorage.getItem("user_id");
-
+  const userId = window.sessionStorage.getItem("id");
+  // useEffect(() => {
+  //   axios
+  //     .get("/api/users", {
+  //       headers: {
+  //         Authorization: `Bearer ${window.sessionStorage.getItem(
+  //           "auth_token"
+  //         )}`,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       console.log("API response:", response.data);
+  //       const data = response.data.data;
+  //       if (Array.isArray(data)) {
+  //         setUsers(data);
+  //       }
+  //     });
+  // }, []);
   useEffect(() => {
     axios
       .get("/api/payments", {
@@ -23,10 +39,10 @@ const PaymentsPage = () => {
             (payment) => payment.payer_id === parseInt(userId)
           );
           const awaiting = filteredPayments.filter(
-            (payment) => payment.amount > 0
+            (payment) => payment.status === "awaiting"
           );
           const completed = filteredPayments.filter(
-            (payment) => payment.amount === 0
+            (payment) => payment.status === "completed"
           );
           setAwaitingPayments(awaiting);
           setCompletedPayments(completed);
@@ -35,25 +51,25 @@ const PaymentsPage = () => {
   }, [userId]);
 
   const handlePay = (paymentId) => {
-    axios
-      .post(
-        `/api/payments/${paymentId}/pay`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${window.sessionStorage.getItem(
-              "auth_token"
-            )}`,
-          },
-        }
-      )
-      .then((response) => {
-        console.log("Payment processed:", response.data);
-        setAwaitingPayments((prev) =>
-          prev.filter((payment) => payment.id !== paymentId)
-        );
-        setCompletedPayments((prev) => [...prev, response.data]);
-      });
+    const authToken = window.sessionStorage.getItem("auth_token");
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `http://127.0.0.1:8000/api/payments/${paymentId}/pay`,
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+    };
+
+    axios.request(config).then((response) => {
+      console.log("Payment processed:", response.data);
+      setAwaitingPayments((prev) =>
+        prev.filter((payment) => payment.id !== paymentId)
+      );
+      setCompletedPayments((prev) => [...prev, response.data]);
+    });
   };
 
   return (
@@ -79,7 +95,7 @@ const PaymentsPage = () => {
               <td>
                 <button
                   className="btn btn-primary"
-                  onClick={handlePay(payment.id)}
+                  onClick={() => handlePay(payment.id)}
                 >
                   Pay
                 </button>
