@@ -53,9 +53,6 @@ const PaymentsPage = () => {
           prev.filter((payment) => payment.id !== paymentId)
         );
         setCompletedPayments((prev) => [...prev, response.data]);
-      })
-      .catch((error) => {
-        console.error("There was an error processing the payment!", error);
       });
   };
 

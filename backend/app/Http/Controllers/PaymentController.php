@@ -64,15 +64,16 @@ class PaymentController extends Controller
         //
     }
 
-    public function pay(Payment $payment)
+    public function pay(Request $request, $id)
     {
+        $payment = Payment::find($id);
+
         if ($payment->amount == 0) {
             return response()->json(['message' => 'Payment has already been processed'], 400);
         }
 
         $payment->update([
-            'amount' => 0,
-            'status' => 'completed',
+            'amount' => 0
         ]);
 
         return new PaymentResource($payment);
