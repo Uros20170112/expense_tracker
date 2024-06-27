@@ -4,59 +4,77 @@ import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [newExpense, setNewExpense] = useState({
+    id: "",
     description: "",
     amount: "",
     paid_by: window.sessionStorage.getItem("id"),
     category_id: "",
     paid_on: "",
   });
+  const [participants, setParticipants] = useState(["", "", "", ""]);
   const [expenses, setExpenses] = useState([]);
   const [categories, setCategories] = useState([]);
   const [categoryIDs, setCategoryIDs] = useState([]);
   const [categoryNames, setCategoryNames] = useState([]);
+  const [users, setUsers] = useState([]);
 
   let navigate = useNavigate();
 
-  const getAllCategories = () => {
-    return axios
+  const fetchCategories = () => {
+    axios
       .get("/api/categories", {
         headers: {
-          Authorization: `Bearer ${window.sessionStorage.getItem(
-            "auth_token"
-          )}`,
+          Authorization: `Bearer ${window.sessionStorage.getItem("auth_token")}`,
         },
       })
       .then((response) => {
         console.log("API response (categories):", response.data);
-        return response.data.data;
+        const data = response.data.data;
+        setCategories(data);
+        setCategoryIDs(data.map((category) => category.id));
+        setCategoryNames(data.map((category) => category.name));
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
       });
   };
 
-  const getAllExpenses = () => {
-    return axios
-      .get("/api/expenses?paid_by=" + window.sessionStorage.getItem("id"), {
+  const fetchUsers = () => {
+    axios
+      .get("/api/users", {
         headers: {
-          Authorization: `Bearer ${window.sessionStorage.getItem(
-            "auth_token"
-          )}`,
+          Authorization: `Bearer ${window.sessionStorage.getItem("auth_token")}`,
+        },
+      })
+      .then((response) => {
+        console.log("API response (users):", response.data);
+        setUsers(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching users:", error);
+      });
+  };
+
+  const fetchExpenses = () => {
+    axios
+      .get(`/api/expenses?paid_by=${window.sessionStorage.getItem("id")}`, {
+        headers: {
+          Authorization: `Bearer ${window.sessionStorage.getItem("auth_token")}`,
         },
       })
       .then((response) => {
         console.log("API response (expenses):", response.data);
-        return response.data.data;
+        setExpenses(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching expenses:", error);
       });
   };
 
   useEffect(() => {
-    getAllCategories().then((data) => {
-      setCategories(data);
-      setCategoryIDs(data.map((category) => category.id));
-      setCategoryNames(data.map((category) => category.name));
-    });
-
-    getAllExpenses().then((data) => {
-      setExpenses(data);
-    });
+    fetchCategories();
+    fetchUsers();
+    fetchExpenses();
   }, []);
 
   function handleInput(e) {
@@ -65,6 +83,15 @@ const HomePage = () => {
       ...prevExpense,
       [name]: value,
     }));
+  }
+
+  function handleParticipantChange(e, index) {
+    const { value } = e.target;
+    setParticipants((prevParticipants) => {
+      const newParticipants = [...prevParticipants];
+      newParticipants[index] = value;
+      return newParticipants;
+    });
   }
 
   const handleSubmit = (e) => {
@@ -78,30 +105,57 @@ const HomePage = () => {
           paid_by: window.sessionStorage.getItem("id"),
           category_id: newExpense.category_id,
           paid_on: newExpense.paid_on,
+          participants: participants.filter((p) => p),
         },
         {
           headers: {
-            Authorization: `Bearer ${window.sessionStorage.getItem(
-              "auth_token"
-            )}`,
+            Authorization: `Bearer ${window.sessionStorage.getItem("auth_token")}`,
           },
         }
       )
       .then((res) => {
-        console.log(res.data);
-        if (res.data.success) {
-          setNewExpense({
-            description: "",
-            amount: "",
-            paid_by: window.sessionStorage.getItem("id"),
-            category_id: "",
-            paid_on: "",
+        const expenseId = res.data.data.id
+        participants.map((participantId) => {
+          console.log(participantId);
+        })
+        const participantPromises = participants
+          .filter((p) => p)
+          .map((participantId) => {
+            return axios.post(
+              "/api/expenseParticipants",
+              {
+                expense_id: expenseId,
+                user_id: participantId,
+                paid_by: window.sessionStorage.getItem("id"),
+                amount_to_refund:
+                  newExpense.amount / (participants.filter((p) => p).length + 1),
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${window.sessionStorage.getItem("auth_token")}`,
+                },
+              }
+            );
           });
-          navigate("/");
-        }
+  
+        Promise.all(participantPromises)
+          .then(() => {
+            setNewExpense({
+              description: "",
+              amount: "",
+              paid_by: window.sessionStorage.getItem("id"),
+              category_id: "",
+              paid_on: "",
+            });
+            setParticipants(["", "", "", ""]);
+            navigate("/");
+          })
+          .catch((error) => {
+            console.error("Error adding participants:", error);
+          });
       })
-      .catch((e) => {
-        console.log(e);
+      .catch((error) => {
+        console.error("Error creating expense:", error);
       });
   };
 
@@ -181,6 +235,27 @@ const HomePage = () => {
                     value={newExpense.paid_on}
                     onChange={handleInput}
                   />
+                </div>
+              </div>
+              <div className="row mt-4">
+                <div className="col-12">
+                  <label>Participants (max 4)</label>
+                  {participants.map((participant, index) => (
+                    <div key={index} className="input-group mb-3">
+                      <select
+                        className="form-control"
+                        value={participant}
+                        onChange={(e) => handleParticipantChange(e, index)}
+                      >
+                        <option value="">Select Participant</option>
+                        {users.map((user) => (
+                          <option key={user.id} value={user.id}>
+                            {user.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className="col-11 new-expense__actions px-4 py-3 mx-auto d-flex justify-content-end">

@@ -61,7 +61,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('/expenses', ExpenseController::class)
         ->only(['store', 'update', 'destroy']);
 
-    Route::resource('/expenseParticpipants', ExpenseParticipantController::class)
+    Route::resource('/expenseParticipants', ExpenseParticipantController::class)
         ->only(['store', 'update', 'destroy']);
 
     Route::resource('/payments', PaymentController::class)

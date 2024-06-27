@@ -41,7 +41,12 @@ class ExpenseParticipantController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $participant = ExpenseParticipant::create($request->all());
+        $participant = ExpenseParticipant::create([
+            'expense_id' => $request->expense_id,
+            'user_id' => $request->user_id,
+            'amount_to_refund' => $request->amount_to_refund,
+        ]);
+        
 
         return new ExpenseParticipantResource($participant);
     }

@@ -44,7 +44,14 @@ class PaymentController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $payment = Payment::create($request->all());
+        $payment = Payment::create([
+            'payer_id' => $request->payer_id,
+            'payee_id' => $request->payee_id,
+            'expense_id' => $request->expense_id,
+            'amount' => $request->amount,
+            'payment_date' => $request->payment_date,
+            'status' => $request->status,
+        ]);
 
         return new PaymentResource($payment);
     }

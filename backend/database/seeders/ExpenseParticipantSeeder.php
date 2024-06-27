@@ -15,25 +15,27 @@ class ExpenseParticipantSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::statement('
-            INSERT INTO expense_participants (expense_id, user_id, amount_to_refund, created_at)
-            SELECT id, paid_by AS user_id, 0, NOW()
-            FROM expenses
-        ');
+        // DB::statement('
+        //     INSERT INTO expense_participants (expense_id, user_id, amount_to_refund, created_at)
+        //     SELECT id, paid_by AS user_id, 0, NOW()
+        //     FROM expenses
+        // ');
 
-        ExpenseParticipant::factory(5)->create();
+        ExpenseParticipant::factory(10)->create();
 
         DB::statement('
         UPDATE expense_participants ep
         JOIN (
             SELECT
                 ep.expense_id,
-                e.amount / COUNT(ep.user_id) AS amount_per_participant
+                e.amount / (COUNT(ep.user_id) + 1) AS amount_per_participant
             FROM expenses e
             JOIN expense_participants ep ON e.id = ep.expense_id
+            WHERE ep.user_id != e.paid_by
             GROUP BY ep.expense_id, e.amount
         ) AS calculated ON ep.expense_id = calculated.expense_id
-        SET ep.amount_to_refund = calculated.amount_per_participant;
+        SET ep.amount_to_refund = calculated.amount_per_participant
+        WHERE ep.user_id != (SELECT paid_by FROM expenses WHERE id = ep.expense_id);
     ');
     }
 }
