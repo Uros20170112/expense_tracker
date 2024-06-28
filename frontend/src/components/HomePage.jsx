@@ -73,10 +73,11 @@ const HomePage = () => {
       });
   };
 
-
   const fetchExchangeRates = () => {
     axios
-      .get("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json")
+      .get(
+        "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json"
+      )
       .then((response) => {
         console.log("API response (exchangeRates):", response.data);
         setExchangeRates({
@@ -134,9 +135,6 @@ const HomePage = () => {
       )
       .then((res) => {
         const expenseId = res.data.data.id;
-        participants.map((participantId) => {
-          console.log(participantId);
-        });
         const participantPromises = participants
           .filter((p) => p)
           .map((participantId) => {
@@ -149,31 +147,6 @@ const HomePage = () => {
                 amount_to_refund:
                   newExpense.amount /
                   (participants.filter((p) => p).length + 1),
-              },
-              {
-                headers: {
-                  Authorization: `Bearer ${window.sessionStorage.getItem(
-                    "auth_token"
-                  )}`,
-                },
-              }
-            );
-          });
-
-        const paymentPromises = participants
-          .filter((p) => p)
-          .map((participantId) => {
-            return axios.post(
-              "/api/payments",
-              {
-                payer_id: participantId,
-                payee_id: window.sessionStorage.getItem("id"),
-                expense_id: expenseId,
-                amount:
-                  newExpense.amount /
-                  (participants.filter((p) => p).length + 1),
-                payment_date: newExpense.paid_on,
-                status: "awaiting",
               },
               {
                 headers: {
@@ -207,8 +180,6 @@ const HomePage = () => {
               }
             );
           });
-
-          return Promise.all(paymentPromises);
         });
       })
       .then(() => {
