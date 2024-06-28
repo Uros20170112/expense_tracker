@@ -17,6 +17,11 @@ const HomePage = () => {
   const [categoryIDs, setCategoryIDs] = useState([]);
   const [categoryNames, setCategoryNames] = useState([]);
   const [users, setUsers] = useState([]);
+  const [exchangeRates, setExchangeRates] = useState({
+    USD: null,
+    GBP: null,
+    CHF: null,
+  });
 
   let navigate = useNavigate();
 
@@ -35,9 +40,6 @@ const HomePage = () => {
         setCategories(data);
         setCategoryIDs(data.map((category) => category.id));
         setCategoryNames(data.map((category) => category.name));
-      })
-      .catch((error) => {
-        console.error("Error fetching categories:", error);
       });
   };
 
@@ -53,9 +55,6 @@ const HomePage = () => {
       .then((response) => {
         console.log("API response (users):", response.data);
         setUsers(response.data.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching users:", error);
       });
   };
 
@@ -71,9 +70,20 @@ const HomePage = () => {
       .then((response) => {
         console.log("API response (expenses):", response.data);
         setExpenses(response.data.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching expenses:", error);
+      });
+  };
+
+
+  const fetchExchangeRates = () => {
+    axios
+      .get("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json")
+      .then((response) => {
+        console.log("API response (exchangeRates):", response.data);
+        setExchangeRates({
+          USD: response.data.eur.usd,
+          GBP: response.data.eur.gbp,
+          CHF: response.data.eur.chf,
+        });
       });
   };
 
@@ -81,6 +91,7 @@ const HomePage = () => {
     fetchCategories();
     fetchUsers();
     fetchExpenses();
+    fetchExchangeRates();
   }, []);
 
   function handleInput(e) {
@@ -210,9 +221,6 @@ const HomePage = () => {
         });
         setParticipants(["", "", "", ""]);
         navigate("/");
-      })
-      .catch((e) => {
-        console.log(e);
       });
   };
 
@@ -225,6 +233,12 @@ const HomePage = () => {
     <div className="container wrapper mt-5 py-4 rounded">
       <div className="container mb-5">
         <div className="row new-expense">
+          <div className="col-12 mb-4">
+            <h3>Exchange Rates (EUR to):</h3>
+            <p>USD: {exchangeRates.USD}</p>
+            <p>GBP: {exchangeRates.GBP}</p>
+            <p>CHF: {exchangeRates.CHF}</p>
+          </div>
           <button
             type="button"
             className="expense-controls__btn btn btn-block mb-5"
