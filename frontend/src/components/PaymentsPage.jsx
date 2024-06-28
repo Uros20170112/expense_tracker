@@ -50,26 +50,26 @@ const PaymentsPage = () => {
       });
   }, [userId]);
 
-  const handlePay = (paymentId) => {
-    const authToken = window.sessionStorage.getItem("auth_token");
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `http://127.0.0.1:8000/api/payments/${paymentId}/pay`,
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${authToken}`,
-      },
-    };
-
-    axios.request(config).then((response) => {
-      console.log("Payment processed:", response.data);
-      setAwaitingPayments((prev) =>
-        prev.filter((payment) => payment.id !== paymentId)
-      );
-      setCompletedPayments((prev) => [...prev, response.data]);
-    });
+  const handlePay = (paymentId, amount) => {
+    axios
+      .post(
+        `/api/payments/${paymentId}/pay`,
+        { amount },
+        {
+          headers: {
+            Authorization: `Bearer ${window.sessionStorage.getItem(
+              "auth_token"
+            )}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log("Payment processed:", response.data);
+        setAwaitingPayments((prev) =>
+          prev.filter((payment) => payment.id !== paymentId)
+        );
+        setCompletedPayments((prev) => [...prev, response.data]);
+      });
   };
 
   return (
@@ -90,12 +90,12 @@ const PaymentsPage = () => {
             <tr key={payment.id}>
               <td>{payment.id}</td>
               <td>{payment.payer_id}</td>
-              <td>{payment.amount}</td>
+              <td>{payment.amount} €</td>
               <td>{payment.status}</td>
               <td>
                 <button
                   className="btn btn-primary"
-                  onClick={() => handlePay(payment.id)}
+                  onClick={() => handlePay(payment.id, payment.amount)}
                 >
                   Pay
                 </button>
@@ -120,7 +120,7 @@ const PaymentsPage = () => {
             <tr key={payment.id}>
               <td>{payment.id}</td>
               <td>{payment.payer_id}</td>
-              <td>{payment.amount}</td>
+              <td>{payment.amount} €</td>
               <td>{payment.status}</td>
             </tr>
           ))}

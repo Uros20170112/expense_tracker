@@ -92,7 +92,7 @@ const NavBar = ({ token }) => {
                   <u>Home</u>
                 </Link>
               </li>
-              {window.sessionStorage.getItem("auth_token") == null ? (
+              {/* {window.sessionStorage.getItem("auth_token") == null ? (
                 <li className="nav-item">
                   <Link to="/login" className="nav-link">
                     <u>Login</u>
@@ -104,7 +104,7 @@ const NavBar = ({ token }) => {
                     Logout
                   </a>
                 </li>
-              )}
+              )} */}
               {window.sessionStorage.getItem("auth_token") != null ? (
                 <li className="nav-item">
                   <Link to="/payments" className="nav-link">
@@ -119,6 +119,19 @@ const NavBar = ({ token }) => {
                   </a>
                 </li>
               ) : null}
+              {window.sessionStorage.getItem("auth_token") == null ? (
+                <li className="nav-item">
+                  <Link to="/login" className="nav-link">
+                    <u>Login</u>
+                  </Link>
+                </li>
+              ) : (
+                <li className="nav-item">
+                  <a className="nav-link" href="#" onClick={handleLogout}>
+                    Logout
+                  </a>
+                </li>
+              )}
             </ul>
             <form className="d-flex position-relative">
               <input

@@ -45,6 +45,8 @@ Route::get('/expensesParticipants/{id}', [ExpenseParticipantController::class, '
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/password/reset', [AuthController::class, 'resetPassword']);
+
 
 Route::get('/users/export/csv', [UserController::class, 'exportToCSV']);
 Route::get('/expenses/export/csv', [ExpenseController::class, 'exportToCSV']);

@@ -31,10 +31,10 @@ class PaymentSeeder extends Seeder
                 ep.amount_to_refund > 0;
         ");
 
-        DB::statement("
-            UPDATE expense_participants
-            SET amount_to_refund = 0
-            WHERE amount_to_refund > 0;
-        ");
+        // DB::statement("
+        //     UPDATE expense_participants
+        //     SET amount_to_refund = 0
+        //     WHERE amount_to_refund > 0;
+        // ");
     }
 }

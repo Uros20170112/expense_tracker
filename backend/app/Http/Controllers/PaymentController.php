@@ -74,8 +74,12 @@ class PaymentController extends Controller
 
     public function pay(Request $request, $id)
     {
+        $request->validate([
+            'amount' => 'required|numeric|min:0',
+        ]);
+
         $payment = Payment::findOrFail($id);
-        $payment->amount = 0;
+        $payment->amount = $request->amount;
         $payment->status = 'completed';
         $payment->save();
 

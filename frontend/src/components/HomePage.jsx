@@ -24,7 +24,9 @@ const HomePage = () => {
     axios
       .get("/api/categories", {
         headers: {
-          Authorization: `Bearer ${window.sessionStorage.getItem("auth_token")}`,
+          Authorization: `Bearer ${window.sessionStorage.getItem(
+            "auth_token"
+          )}`,
         },
       })
       .then((response) => {
@@ -43,7 +45,9 @@ const HomePage = () => {
     axios
       .get("/api/users", {
         headers: {
-          Authorization: `Bearer ${window.sessionStorage.getItem("auth_token")}`,
+          Authorization: `Bearer ${window.sessionStorage.getItem(
+            "auth_token"
+          )}`,
         },
       })
       .then((response) => {
@@ -59,7 +63,9 @@ const HomePage = () => {
     axios
       .get(`/api/expenses?paid_by=${window.sessionStorage.getItem("id")}`, {
         headers: {
-          Authorization: `Bearer ${window.sessionStorage.getItem("auth_token")}`,
+          Authorization: `Bearer ${window.sessionStorage.getItem(
+            "auth_token"
+          )}`,
         },
       })
       .then((response) => {
@@ -109,15 +115,17 @@ const HomePage = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${window.sessionStorage.getItem("auth_token")}`,
+            Authorization: `Bearer ${window.sessionStorage.getItem(
+              "auth_token"
+            )}`,
           },
         }
       )
       .then((res) => {
-        const expenseId = res.data.data.id
+        const expenseId = res.data.data.id;
         participants.map((participantId) => {
           console.log(participantId);
-        })
+        });
         const participantPromises = participants
           .filter((p) => p)
           .map((participantId) => {
@@ -128,34 +136,83 @@ const HomePage = () => {
                 user_id: participantId,
                 paid_by: window.sessionStorage.getItem("id"),
                 amount_to_refund:
-                  newExpense.amount / (participants.filter((p) => p).length + 1),
+                  newExpense.amount /
+                  (participants.filter((p) => p).length + 1),
               },
               {
                 headers: {
-                  Authorization: `Bearer ${window.sessionStorage.getItem("auth_token")}`,
+                  Authorization: `Bearer ${window.sessionStorage.getItem(
+                    "auth_token"
+                  )}`,
                 },
               }
             );
           });
-  
-        Promise.all(participantPromises)
-          .then(() => {
-            setNewExpense({
-              description: "",
-              amount: "",
-              paid_by: window.sessionStorage.getItem("id"),
-              category_id: "",
-              paid_on: "",
-            });
-            setParticipants(["", "", "", ""]);
-            navigate("/");
-          })
-          .catch((error) => {
-            console.error("Error adding participants:", error);
+
+        const paymentPromises = participants
+          .filter((p) => p)
+          .map((participantId) => {
+            return axios.post(
+              "/api/payments",
+              {
+                payer_id: participantId,
+                payee_id: window.sessionStorage.getItem("id"),
+                expense_id: expenseId,
+                amount:
+                  newExpense.amount /
+                  (participants.filter((p) => p).length + 1),
+                payment_date: newExpense.paid_on,
+                status: "awaiting",
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${window.sessionStorage.getItem(
+                    "auth_token"
+                  )}`,
+                },
+              }
+            );
           });
+
+        return Promise.all(participantPromises).then((participantResponses) => {
+          const paymentPromises = participantResponses.map((response) => {
+            const participant = response.data.data;
+            return axios.post(
+              "/api/payments",
+              {
+                payer_id: participant.user_id,
+                payee_id: window.sessionStorage.getItem("id"),
+                expense_id: participant.expense_id,
+                amount: participant.amount_to_refund,
+                payment_date: newExpense.paid_on,
+                status: "awaiting",
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${window.sessionStorage.getItem(
+                    "auth_token"
+                  )}`,
+                },
+              }
+            );
+          });
+
+          return Promise.all(paymentPromises);
+        });
       })
-      .catch((error) => {
-        console.error("Error creating expense:", error);
+      .then(() => {
+        setNewExpense({
+          description: "",
+          amount: "",
+          paid_by: window.sessionStorage.getItem("id"),
+          category_id: "",
+          paid_on: "",
+        });
+        setParticipants(["", "", "", ""]);
+        navigate("/");
+      })
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -210,7 +267,7 @@ const HomePage = () => {
                   <label htmlFor="amount">Amount</label>
                   <div className="input-group mb-3">
                     <div className="input-group-prepend">
-                      <span className="input-group-text">$</span>
+                      <span className="input-group-text">€</span>
                     </div>
                     <input
                       type="number"
@@ -316,7 +373,7 @@ const HomePage = () => {
                 <span className="expense-date">{expense.paid_on}</span>
               </div>
               <div className="col-3 col-sm-2 col-md-2 d-flex align-items-center justify-content-center">
-                <span className="expense-amount">${expense.amount}</span>
+                <span className="expense-amount">€{expense.amount}</span>
               </div>
             </div>
           ))}
