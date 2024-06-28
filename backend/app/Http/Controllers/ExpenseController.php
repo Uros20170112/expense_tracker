@@ -73,6 +73,12 @@ class ExpenseController extends Controller
         return new ExpenseResource($expense);
     }
 
+    public function showId($id)
+    {
+        $expense = Expense::findOrFail($id);
+        return new ExpenseResource($expense);
+    }
+
     /**
      * Show the form for editing the specified resource.
      */

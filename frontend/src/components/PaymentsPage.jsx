@@ -5,23 +5,7 @@ const PaymentsPage = () => {
   const [awaitingPayments, setAwaitingPayments] = useState([]);
   const [completedPayments, setCompletedPayments] = useState([]);
   const userId = window.sessionStorage.getItem("id");
-  // useEffect(() => {
-  //   axios
-  //     .get("/api/users", {
-  //       headers: {
-  //         Authorization: `Bearer ${window.sessionStorage.getItem(
-  //           "auth_token"
-  //         )}`,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       console.log("API response:", response.data);
-  //       const data = response.data.data;
-  //       if (Array.isArray(data)) {
-  //         setUsers(data);
-  //       }
-  //     });
-  // }, []);
+
   useEffect(() => {
     axios
       .get("/api/payments", {

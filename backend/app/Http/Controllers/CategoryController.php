@@ -39,8 +39,9 @@ class CategoryController extends Controller
     }
 
 
-    public function show(Category $category)
+    public function show($id)
     {
+        $category = Category::findOrFail($id);
         return $category;
     }
 

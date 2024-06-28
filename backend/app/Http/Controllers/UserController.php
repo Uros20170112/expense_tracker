@@ -9,14 +9,10 @@ use Illuminate\Support\Facades\Response;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Auth;
-use Illuminate\Support\Facades\DB;
+
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 20);
@@ -44,23 +40,6 @@ class UserController extends Controller
 
         return new UserResource($user);
     }
-
-    // public function login(Request $request)
-    // {
-    //     if (!Auth::attempt($request->only('email', 'password'))) {
-    //         return response()->json(['message' => 'Unauthorized'], 401);
-    //     }
-
-    //     $user = User::where('email', $request['email'])->firstOrFail();
-
-    //     $token = $user->createToken('auth_token')->plainTextToken;
-
-    //     return response()->json([
-    //         'message' => $user->name . ' logged in',
-    //         'access_token' => $token,
-    //         'token_type' => 'Bearer'
-    //     ]);
-    // }
 
     /**
      * Show the form for creating a new resource.
@@ -153,7 +132,7 @@ class UserController extends Controller
     {
         try {
             $ids = $request->input('ids');
-            
+
             User::whereIn('id', $ids)->delete();
 
             return response()->json(['message' => 'Users deleted successfully.'], 200);

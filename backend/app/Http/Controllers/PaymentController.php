@@ -59,8 +59,9 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Payment $payment)
+    public function show($id)
     {
+        $payment = Payment::findOrFail($id);
         return new PaymentResource($payment);
     }
 

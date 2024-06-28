@@ -54,8 +54,9 @@ class ExpenseParticipantController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ExpenseParticipant $expenseParticipant)
+    public function show($id)
     {
+        $expenseParticipant = ExpenseParticipant::findOrFail($id);
         return new ExpenseParticipantResource($expenseParticipant);
     }
 

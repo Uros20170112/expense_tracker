@@ -19,23 +19,6 @@ class AuthController extends Controller
             'email' => 'required|string|max:255|email|unique:users',
             'password' => 'required|string|min:8',
         ]);
-
-        // if ($validator->fails()) {
-        //     return response()->json($validator->errors());
-        // }
-
-        // $user = User::create([
-        //     'name' => $request->name,
-        //     'email' => $request->email,
-        //     'password' => Hash::make($request->password)
-        // ]);
-
-        // $token = $user->createToken('auth_token')->plainTextToken;
-        // return response()->json([
-        //     'user' => $user,
-        //     'access_token' => $token,
-        //     'token_type' => 'Bearer'
-        // ]);
         if ($validator->fails())
             return response()->json($validator->errors());
 
@@ -51,31 +34,6 @@ class AuthController extends Controller
         return response()->json(['user' => $user, 'access_token' => $token, 'token_type' => 'Bearer']);
 
     }
-
-    // public function login(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'email' => 'required|string|email',
-    //         'password' => 'required|string',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return response()->json(['errors' => $validator->errors()], 422);
-    //     }
-
-    //     if (!Auth::attempt($request->only('email', 'password'))) {
-    //         return response()->json(['message' => 'Invalid login credentials'], 401);
-    //     }
-
-    //     $user = Auth::user();
-    //     $token = $user->createToken('auth_token')->plainTextToken;
-
-    //     return response()->json([
-    //         'message' => $user->name . ' logged in',
-    //         'access_token' => $token,
-    //         'token_type' => 'Bearer',
-    //     ]);
-    // }
 
     public function login(Request $request)
     {
